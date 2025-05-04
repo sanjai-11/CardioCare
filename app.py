@@ -266,9 +266,9 @@ def manage_patient():
 
     if session.get('user_type') == 'doctor':
         doctor_id = session.get('doctor_id')
-        cursor.execute('SELECT * FROM patient WHERE doctor_id = ?', (doctor_id,))
+        cursor.execute('SELECT * FROM patient WHERE doctor_id = ? ORDER BY patient_id DESC', (doctor_id,))
     else:
-        cursor.execute('SELECT * FROM patient')
+        cursor.execute('SELECT * FROM patient ORDER BY patient_id DESC')
     patients = cursor.fetchall()
     conn.close()
     return render_template('patient.html', patients=patients, current_page='patient', user_type=session.get('user_type'))
