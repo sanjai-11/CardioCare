@@ -1,0 +1,30 @@
+
+
+1. Raw Content
+   We used raw CSV files to simulate initial patient data for testing and populating the database.
+   dataset link - https://www.kaggle.com/datasets/abdmental01/heart-disease-dataset
+   This file includes sample rows for patient id, age, gender, heart rate, blood pressure, cholestrol, etc.
+2. Database Structure
+   We used SQLite as our database.
+	•	The schema includes the following tables:
+	•	admin: Stores admin credentials
+	•	doctor: Stores doctor credentials
+	•	patient: Stores patient details (linked to doctor_id)
+	•	heart_record: Stores heart-related data (linked to patient_id)
+	•	risk_analysis: Stores prediction results for each patient
+	•	The database is initialized via SQL scripts, and relationships are enforced using foreign keys.
+	•	Data can also be imported/exported using .csv or .json format if needed.
+3. Application Interface Code
+   The application was developed using Python (Flask) for backend and HTML/CSS/JavaScript for the frontend.
+   ├── app.py                 # Main Flask backend
+   ├── /templates             # HTML templates (Jinja2)
+   ├── /static                # CSS, JS files
+   ├── /database              # health_records.db (SQLite file)
+   ├── train_model.py         # Model training code
+   ├── heart_disease_model.pkl # Saved ML model
+  
+4. Interaction Logic
+  •	Interactions with the database are done using Python’s sqlite3 module.
+	•	We use raw SQL queries within Python for:
+	•	SELECT, INSERT, UPDATE, DELETE
+	•	JOINs for linking patients with heart records and analysis 
