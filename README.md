@@ -33,3 +33,16 @@ The application was developed using:
 - **Frontend**: HTML, CSS, JavaScript (for interactive UI)
 
 ### File Structure:
+├── app.py # Main Flask backend
+├── /templates # HTML templates (Jinja2)
+├── /static # CSS, JS files
+├── /database # health_records.db (SQLite file)
+├── train_model.py # Model training code
+├── heart_disease_model.pkl # Saved ML model
+
+
+## 4. Interaction Logic
+- Interactions with the database are done using Python’s `sqlite3` module.
+- We use raw SQL queries within Python for:
+  - `SELECT`, `INSERT`, `UPDATE`, `DELETE`
+  - `JOIN`s for linking patients with heart records and analysis results.
