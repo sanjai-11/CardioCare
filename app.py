@@ -214,7 +214,7 @@ def manage_heart_record():
             (patient_id, heart_rate, chest_pain, blood_pressure, cholesterol, fbs, ecg_results, exang, oldpeak, slope, thal)
         )
 
-        cursor.execute("SELECT age, gender FROM patient WHERE patient_id = ?", (patient_id,))
+        cursor.execute("SELECT age, gender FROM patient WHERE patient_id = ? ORDER BY patient_id DESC", (patient_id,))
         patient = cursor.fetchone()
         age = patient['age']
         gender = int(patient['gender'])  # Ensure it's numeric
@@ -236,9 +236,9 @@ def manage_heart_record():
         conn.commit()
         return redirect(url_for('manage_heart_record'))
 
-    cursor.execute('SELECT * FROM heart_record')
+    cursor.execute('SELECT * FROM heart_record ORDER BY patient_id DESC')
     records = cursor.fetchall()
-    cursor.execute('SELECT * FROM patient')
+    cursor.execute('SELECT * FROM patient ORDER BY patient_id DESC')
     patients = cursor.fetchall()
     conn.close()
     return render_template('heart_record.html', records=records, patients=patients, current_page='heart_record', user_type=session.get('user_type'))
@@ -329,7 +329,7 @@ def manage_risk_analysis():
     ORDER BY r.analysis_id DESC
 ''')
     analyses = cursor.fetchall()
-    cursor.execute('SELECT * FROM patient')
+    cursor.execute('SELECT * FROM patient ORDER BY patient_id DESC')
     patients = cursor.fetchall()
     conn.close()
     return render_template('risk_analysis.html', analyses=analyses, patients=patients, current_page='risk_analysis', user_type=session.get('user_type'))
