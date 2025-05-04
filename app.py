@@ -4,13 +4,13 @@ import joblib
 import numpy as np
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'  # Replace with a secure secret key
+app.secret_key = 'your_secret_key'
 
-model = joblib.load('heart_disease_model.pkl')  # adjust path if needed
+model = joblib.load('heart_disease_model.pkl') 
 
 # Function to connect to SQLite database
 def get_db_connection():
-    conn = sqlite3.connect('database/health_records.db')  # Replace with the correct path to your database
+    conn = sqlite3.connect('database/health_records.db') 
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -218,7 +218,7 @@ def manage_heart_record():
         patient = cursor.fetchone()
         age = patient['age']
         gender = int(patient['gender'])  # Ensure it's numeric
-        ca = 0  # Default or you can collect it via the form
+        ca = 0  
         # ✅ Prepare input for prediction
         input_data = np.array([[age, gender, chest_pain, blood_pressure, cholesterol,
                         fbs, ecg_results, heart_rate, exang, oldpeak, ca, slope, thal]])
