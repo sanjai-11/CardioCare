@@ -33,16 +33,18 @@ The application was developed using:
 - **Frontend**: HTML, CSS, JavaScript (for interactive UI)
 
 ### File Structure:
-├── app.py # Main Flask backend
-├── /templates # HTML templates (Jinja2)
-├── /static # CSS, JS files
-├── /database # health_records.db (SQLite file)
-├── train_model.py # Model training code
-├── heart_disease_model.pkl # Saved ML model
 
+- **`app.py`**: This is the main Python file that handles backend logic with Flask.
+- **`/templates/`**: Contains HTML files used by Flask (rendered with Jinja2).
+- **`/static/`**: This directory contains the static assets such as CSS and JavaScript files.
+- **`/database/`**: The SQLite database file `health_records.db` which contains the various tables such as `admin`, `doctor`, `patient`, `heart_record`, and `risk_analysis`.
+- **`train_model.py`**: Python script for training the machine learning model using the dataset.
+- **`heart_disease_model.pkl`**: The saved model file (using `joblib`) that is used for predicting the risk score.
 
 ## 4. Interaction Logic
 - Interactions with the database are done using Python’s `sqlite3` module.
 - We use raw SQL queries within Python for:
   - `SELECT`, `INSERT`, `UPDATE`, `DELETE`
   - `JOIN`s for linking patients with heart records and analysis results.
+
+
