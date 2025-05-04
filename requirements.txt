@@ -4,3 +4,4 @@ joblib==1.1.0
 Flask-SQLAlchemy==3.0.2
 Flask-WTF==1.0.1
 Flask-MySQLdb==1.0.1
+Werkzeug>=2.1.0
