@@ -269,3 +269,6 @@ youtube-dl==2021.12.17
 youtube-transcript-api==0.6.3
 yt-dlp==2024.12.13
 zipp==3.7.0
+Flask==2.0.1
+gunicorn==20.1.0
+joblib==1.1.0
