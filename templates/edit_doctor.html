@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Doctor</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+  </head>
+  <body>
+    <nav>
+      <ul
+        style="
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        "
+      >
+        <div style="display: flex; gap: 20px">
+          <li>
+            <a
+              href="{{ url_for('dashboard') }}"
+              class="{% if current_page == 'dashboard' %}active{% endif %}"
+              >Dashboard</a
+            >
+          </li>
+          <li>
+            <a
+              href="{{ url_for('manage_patient') }}"
+              class="{% if current_page == 'patient' %}active{% endif %}"
+              >Patients</a
+            >
+          </li>
+          <li>
+            <a
+              href="{{ url_for('manage_heart_record') }}"
+              class="{% if current_page == 'heart_record' %}active{% endif %}"
+              >Heart Records</a
+            >
+          </li>
+          <li>
+            <a
+              href="{{ url_for('manage_risk_analysis') }}"
+              class="{% if current_page == 'risk_analysis' %}active{% endif %}"
+              >Risk Analysis</a
+            >
+          </li>
+          {% if user_type == 'admin' %}
+          <li>
+            <a
+              href="{{ url_for('manage_admin') }}"
+              class="{% if current_page == 'admin' %}active{% endif %}"
+              >Admin</a
+            >
+          </li>
+          {% elif user_type == 'doctor' %}
+          <li>
+            <a
+              href="{{ url_for('doctor_profile') }}"
+              class="{% if current_page == 'profile' %}active{% endif %}"
+              >Profile</a
+            >
+          </li>
+          {% endif %}
+        </div>
+        <li>
+          <a
+            href="{{ url_for('logout') }}"
+            style="
+              background: #e53935;
+              color: #fff;
+              border-radius: 6px;
+              padding: 8px 18px;
+            "
+            >Logout</a
+          >
+        </li>
+      </ul>
+    </nav>
+    <div class="container">
+      <div class="card">
+        <h2>Edit Doctor</h2>
+        <form
+          action="{{ url_for('edit_doctor', doctor_id=doctor['doctor_id']) }}"
+          method="POST"
+        >
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input
+              type="text"
+              name="name"
+              required
+              placeholder="Enter doctor name"
+              value="{{ doctor['name'] }}"
+            />
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input
+              type="email"
+              name="email"
+              required
+              placeholder="Enter doctor email"
+              value="{{ doctor['email'] }}"
+            />
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <div style="position: relative">
+              <input
+                type="password"
+                name="password"
+                id="edit-doctor-password"
+                required
+                placeholder="Enter password"
+                value="{{ doctor['password'] }}"
+                style="padding-right: 40px"
+              />
+              <span
+                onclick="togglePassword('edit-doctor-password', this)"
+                style="
+                  position: absolute;
+                  top: 50%;
+                  right: 12px;
+                  transform: translateY(-50%);
+                  cursor: pointer;
+                "
+              >
+                <svg
+                  id="edit-doctor-eye"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="3.5"
+                    stroke="#4CAF50"
+                    stroke-width="2"
+                  />
+                  <path
+                    d="M2 12C4.5 7 8.5 4 12 4C15.5 4 19.5 7 22 12C19.5 17 15.5 20 12 20C8.5 20 4.5 17 2 12Z"
+                    stroke="#4CAF50"
+                    stroke-width="2"
+                  />
+                </svg>
+              </span>
+            </div>
+          </div>
+          <button type="submit">Update Doctor</button>
+          <a href="{{ url_for('manage_doctor') }}" style="margin-left: 16px"
+            >Cancel</a
+          >
+        </form>
+      </div>
+    </div>
+    <script>
+      function togglePassword(inputId, iconSpan) {
+        const input = document.getElementById(inputId);
+        if (input.type === "password") {
+          input.type = "text";
+          iconSpan.querySelector("svg").style.opacity = 0.5;
+        } else {
+          input.type = "password";
+          iconSpan.querySelector("svg").style.opacity = 1;
+        }
+      }
+    </script>
+  </body>
+</html>

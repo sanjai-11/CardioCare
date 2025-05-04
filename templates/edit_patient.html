@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Patient</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+  </head>
+  <body>
+    <nav>
+      <ul
+        style="
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        "
+      >
+        <div style="display: flex; gap: 20px">
+          <li>
+            <a
+              href="{{ url_for('dashboard') }}"
+              class="{% if current_page == 'dashboard' %}active{% endif %}"
+              >Dashboard</a
+            >
+          </li>
+          <li>
+            <a
+              href="{{ url_for('manage_patient') }}"
+              class="{% if current_page == 'patient' %}active{% endif %}"
+              >Patients</a
+            >
+          </li>
+          <li>
+            <a
+              href="{{ url_for('manage_heart_record') }}"
+              class="{% if current_page == 'heart_record' %}active{% endif %}"
+              >Heart Records</a
+            >
+          </li>
+          <li>
+            <a
+              href="{{ url_for('manage_risk_analysis') }}"
+              class="{% if current_page == 'risk_analysis' %}active{% endif %}"
+              >Risk Analysis</a
+            >
+          </li>
+          {% if user_type == 'admin' %}
+          <li>
+            <a
+              href="{{ url_for('manage_admin') }}"
+              class="{% if current_page == 'admin' %}active{% endif %}"
+              >Admin</a
+            >
+          </li>
+          {% elif user_type == 'doctor' %}
+          <li>
+            <a
+              href="{{ url_for('doctor_profile') }}"
+              class="{% if current_page == 'profile' %}active{% endif %}"
+              >Profile</a
+            >
+          </li>
+          {% endif %}
+        </div>
+        <li>
+          <a
+            href="{{ url_for('logout') }}"
+            style="
+              background: #e53935;
+              color: #fff;
+              border-radius: 6px;
+              padding: 8px 18px;
+            "
+            >Logout</a
+          >
+        </li>
+      </ul>
+    </nav>
+    <div class="container">
+      <div class="card">
+        <h2>Edit Patient</h2>
+        <form
+          action="{{ url_for('edit_patient', patient_id=patient['patient_id']) }}"
+          method="POST"
+        >
+          <div class="form-group">
+            <label for="name">Name</label
+            ><input
+              type="text"
+              name="name"
+              required
+              value="{{ patient['name'] }}"
+            />
+          </div>
+          <div class="form-group">
+            <label for="age">Age</label
+            ><input
+              type="number"
+              name="age"
+              required
+              value="{{ patient['age'] }}"
+            />
+          </div>
+          <div class="form-group">
+            <label for="gender">Gender</label
+            ><input
+              type="text"
+              name="gender"
+              required
+              value="{{ patient['gender'] }}"
+            />
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone</label
+            ><input
+              type="text"
+              name="phone"
+              required
+              value="{{ patient['phone'] }}"
+            />
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label
+            ><input
+              type="email"
+              name="email"
+              required
+              value="{{ patient['email'] }}"
+            />
+          </div>
+          <div class="form-group">
+            <label for="emergency_contact">Emergency Contact</label
+            ><input
+              type="text"
+              name="emergency_contact"
+              required
+              value="{{ patient['emergency_contact'] }}"
+            />
+          </div>
+          <div class="form-group">
+            <label for="location">Location</label
+            ><input
+              type="text"
+              name="location"
+              required
+              value="{{ patient['location'] }}"
+            />
+          </div>
+          <button type="submit">Update Patient</button>
+          <a href="{{ url_for('manage_patient') }}" style="margin-left: 16px"
+            >Cancel</a
+          >
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

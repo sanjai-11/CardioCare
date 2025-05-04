@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Heart Record Management</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+  </head>
+  <script src="{{ url_for('static', filename='utils.js') }}"></script>
+  <style>
+    th {
+      cursor: pointer;
+    }
+    .suggestions {
+      border: 0px solid #ccc;
+      max-height: 150px;
+      overflow-y: auto;
+      position: absolute;
+      background: white;
+      width: 100%;
+      z-index: 10;
+    }
+    .suggestions div {
+      padding: 8px;
+      cursor: pointer;
+    }
+    .suggestions div:hover {
+      background: #f0f0f0;
+    }
+  </style>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const input = document.getElementById("patient_search");
+      const suggestionsBox = document.getElementById("patient_suggestions");
+      const hiddenId = document.getElementById("patient_id");
+
+      input.addEventListener("input", async () => {
+        const query = input.value.trim();
+        if (!query) {
+          suggestionsBox.innerHTML = "";
+          return;
+        }
+
+        try {
+          const response = await fetch(`/search_patient?query=${query}`);
+          const data = await response.json();
+          suggestionsBox.innerHTML = "";
+          data.forEach((patient) => {
+            const div = document.createElement("div");
+            div.textContent = `${patient.name} (${patient.patient_id})`;
+            div.onclick = () => {
+              input.value = patient.name;
+              hiddenId.value = patient.patient_id;
+              suggestionsBox.innerHTML = "";
+            };
+            suggestionsBox.appendChild(div);
+          });
+        } catch (err) {
+          console.error("Failed to fetch suggestions", err);
+        }
+      });
+
+      document.addEventListener("click", (event) => {
+        if (!suggestionsBox.contains(event.target) && event.target !== input) {
+          suggestionsBox.innerHTML = "";
+        }
+      });
+    });
+  </script>
+  <body>
+    <nav>
+      <ul
+        style="
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        "
+      >
+        <div style="display: flex; gap: 20px">
+          <li>
+            <a
+              href="{{ url_for('dashboard') }}"
+              class="{% if current_page == 'dashboard' %}active{% endif %}"
+              >Dashboard</a
+            >
+          </li>
+          <li>
+            <a
+              href="{{ url_for('manage_patient') }}"
+              class="{% if current_page == 'patient' %}active{% endif %}"
+              >Patients</a
+            >
+          </li>
+          <li>
+            <a
+              href="{{ url_for('manage_heart_record') }}"
+              class="{% if current_page == 'heart_record' %}active{% endif %}"
+              >Heart Records</a
+            >
+          </li>
+          <li>
+            <a
+              href="{{ url_for('manage_risk_analysis') }}"
+              class="{% if current_page == 'risk_analysis' %}active{% endif %}"
+              >Risk Analysis</a
+            >
+          </li>
+          {% if user_type == 'admin' %}
+          <li>
+            <a
+              href="{{ url_for('manage_admin') }}"
+              class="{% if current_page == 'admin' %}active{% endif %}"
+              >Admin</a
+            >
+          </li>
+          {% elif user_type == 'doctor' %}
+          <li>
+            <a
+              href="{{ url_for('doctor_profile') }}"
+              class="{% if current_page == 'profile' %}active{% endif %}"
+              >Profile</a
+            >
+          </li>
+          {% endif %}
+        </div>
+        <li>
+          <a
+            href="{{ url_for('logout') }}"
+            style="
+              background: #e53935;
+              color: #fff;
+              border-radius: 6px;
+              padding: 8px 18px;
+            "
+            >Logout</a
+          >
+        </li>
+      </ul>
+    </nav>
+    <div class="container">
+      <div class="card">
+        <h2>Manage Heart Records</h2>
+        <form action="{{ url_for('manage_heart_record') }}" method="POST">
+          <div class="form-group">
+            <label for="patient">Search Patient</label>
+            <input
+              type="text"
+              id="patient_search"
+              name="patient_name"
+              placeholder="Type patient name"
+              required
+              autocomplete="off"
+            />
+            <input type="hidden" id="patient_id" name="patient_id" />
+            <div id="patient_suggestions" class="suggestions"></div>
+          </div>
+          <div class="form-group">
+            <label for="heart_rate">Heart Rate</label
+            ><input
+              type="text"
+              name="heart_rate"
+              required
+              placeholder="Heart Rate"
+            />
+          </div>
+          <div class="form-group">
+            <label for="chest_pain">Chest Pain</label
+            ><input
+              type="text"
+              name="chest_pain"
+              required
+              placeholder="Chest Pain"
+            />
+          </div>
+          <div class="form-group">
+            <label for="blood_pressure">Blood Pressure</label
+            ><input
+              type="text"
+              name="blood_pressure"
+              required
+              placeholder="Blood Pressure"
+            />
+          </div>
+          <div class="form-group">
+            <label for="cholesterol">Cholesterol</label
+            ><input
+              type="text"
+              name="cholesterol"
+              required
+              placeholder="Cholesterol"
+            />
+          </div>
+          <div class="form-group">
+            <label for="fbp">FBS</label
+            ><input type="text" name="fbs" required placeholder="FBP" />
+          </div>
+          <div class="form-group">
+            <label for="ecg_results">ECG Results</label
+            ><input
+              type="text"
+              name="ecg_results"
+              required
+              placeholder="ECG Results"
+            />
+          </div>
+          <div class="form-group">
+            <label for="exang">Exang</label
+            ><input type="text" name="exang" required placeholder="Exang" />
+          </div>
+          <div class="form-group">
+            <label for="oldpeak">Oldpeak</label
+            ><input type="text" name="oldpeak" required placeholder="Oldpeak" />
+          </div>
+          <div class="form-group">
+            <label for="slope">Slope</label
+            ><input type="text" name="slope" required placeholder="Slope" />
+          </div>
+          <div class="form-group">
+            <label for="thal">Thal</label
+            ><input type="text" name="thal" required placeholder="Thal" />
+          </div>
+          <button type="submit">Add Record</button>
+        </form>
+        <table>
+          <thead>
+            <tr>
+              <th onclick="sortTable(0)">Record ID ▲▼</th>
+              <th onclick="sortTable(0)">Patient ID ▲▼</th>
+              <th>Heart Rate</th>
+              <th>Chest Pain</th>
+              <th>Blood Pressure</th>
+              <th>Cholesterol</th>
+              <th>FBS</th>
+              <th>ECG Results</th>
+              <th>Exang</th>
+              <th>Oldpeak</th>
+              <th>Slope</th>
+              <th>Thal</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for record in records %}
+            <tr>
+              <td>{{ record['record_id'] }}</td>
+              <td>{{ record['patient_id'] }}</td>
+              <td>{{ record['heart_rate'] }}</td>
+              <td>{{ record['chest_pain'] }}</td>
+              <td>{{ record['blood_pressure'] }}</td>
+              <td>{{ record['cholesterol'] }}</td>
+              <td>{{ record['fbs'] }}</td>
+              <td>{{ record['ecg_results'] }}</td>
+              <td>{{ record['exang'] }}</td>
+              <td>{{ record['oldpeak'] }}</td>
+              <td>{{ record['slope'] }}</td>
+              <td>{{ record['thal'] }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script>
+      anime({
+        targets: ".card",
+        translateY: [100, 0],
+        opacity: [0, 1],
+        duration: 1200,
+        easing: "easeOutExpo",
+      });
+      anime({
+        targets: "tbody tr",
+        opacity: [0, 1],
+        delay: anime.stagger(80, { start: 800 }),
+        duration: 600,
+        easing: "easeOutQuad",
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Doctor Profile</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+  </head>
+  <body>
+    <nav>
+      <ul
+        style="
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        "
+      >
+        <div style="display: flex; gap: 20px">
+          <li>
+            <a
+              href="{{ url_for('dashboard') }}"
+              class="{% if current_page == 'dashboard' %}active{% endif %}"
+              >Dashboard</a
+            >
+          </li>
+          <li>
+            <a
+              href="{{ url_for('manage_patient') }}"
+              class="{% if current_page == 'patient' %}active{% endif %}"
+              >Patients</a
+            >
+          </li>
+          <li>
+            <a
+              href="{{ url_for('manage_heart_record') }}"
+              class="{% if current_page == 'heart_record' %}active{% endif %}"
+              >Heart Records</a
+            >
+          </li>
+          <li>
+            <a
+              href="{{ url_for('manage_risk_analysis') }}"
+              class="{% if current_page == 'risk_analysis' %}active{% endif %}"
+              >Risk Analysis</a
+            >
+          </li>
+          {% if user_type == 'admin' %}
+          <li>
+            <a
+              href="{{ url_for('manage_admin') }}"
+              class="{% if current_page == 'admin' %}active{% endif %}"
+              >Admin</a
+            >
+          </li>
+          {% elif user_type == 'doctor' %}
+          <li>
+            <a
+              href="{{ url_for('doctor_profile') }}"
+              class="{% if current_page == 'profile' %}active{% endif %}"
+              >Profile</a
+            >
+          </li>
+          {% endif %}
+        </div>
+        <li>
+          <a
+            href="{{ url_for('logout') }}"
+            style="
+              background: #e53935;
+              color: #fff;
+              border-radius: 6px;
+              padding: 8px 18px;
+            "
+            >Logout</a
+          >
+        </li>
+      </ul>
+    </nav>
+    <div class="container">
+      <div
+        class="card"
+        style="max-width: 400px; margin: 50px auto; text-align: center"
+      >
+        <img
+          src="{{ url_for('static', filename='default_doctor.png') }}"
+          alt="Doctor Profile Picture"
+          style="
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            object-fit: contain;
+            margin-bottom: 10px;
+          "
+        />
+        <h2>{{ doctor_name }}</h2>
+        <p>{{ doctor_email }}</p>
+        <p><strong>Doctor ID:</strong> {{ doctor_id }}</p>
+      </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script>
+      anime({
+        targets: ".card",
+        translateY: [50, 0],
+        opacity: [0, 1],
+        duration: 1000,
+        easing: "easeOutExpo",
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manage Patients</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+  </head>
+  <style>
+    th {
+  cursor: pointer;
+}
+  </style>
+  <body>
+    <nav>
+      <ul
+        style="
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        "
+      >
+        <div style="display: flex; gap: 20px">
+          <li>
+            <a
+              href="{{ url_for('dashboard') }}"
+              class="{% if current_page == 'dashboard' %}active{% endif %}"
+              >Dashboard</a
+            >
+          </li>
+          <li>
+            <a
+              href="{{ url_for('manage_patient') }}"
+              class="{% if current_page == 'patient' %}active{% endif %}"
+              >Patients</a
+            >
+          </li>
+          <li>
+            <a
+              href="{{ url_for('manage_heart_record') }}"
+              class="{% if current_page == 'heart_record' %}active{% endif %}"
+              >Heart Records</a
+            >
+          </li>
+          <li>
+            <a
+              href="{{ url_for('manage_risk_analysis') }}"
+              class="{% if current_page == 'risk_analysis' %}active{% endif %}"
+              >Risk Analysis</a
+            >
+          </li>
+          {% if user_type == 'admin' %}
+          <li>
+            <a
+              href="{{ url_for('manage_admin') }}"
+              class="{% if current_page == 'admin' %}active{% endif %}"
+              >Admin</a
+            >
+          </li>
+          {% elif user_type == 'doctor' %}
+          <li>
+            <a
+              href="{{ url_for('doctor_profile') }}"
+              class="{% if current_page == 'profile' %}active{% endif %}"
+              >Profile</a
+            >
+          </li>
+          {% endif %}
+        </div>
+        <li>
+          <a
+            href="{{ url_for('logout') }}"
+            style="
+              background: #e53935;
+              color: #fff;
+              border-radius: 6px;
+              padding: 8px 18px;
+            "
+            >Logout</a
+          >
+        </li>
+      </ul>
+    </nav>
+    <div class="container">
+      <div class="card">
+        <h2>Manage Patients</h2>
+        <form action="{{ url_for('manage_patient') }}" method="POST">
+          <div class="form-group">
+            <label for="name">Name</label
+            ><input type="text" name="name" required placeholder="Name" />
+          </div>
+          <div class="form-group">
+            <label for="age">Age</label
+            ><input type="number" name="age" required placeholder="Age" />
+          </div>
+          <div class="form-group">
+            <label for="gender">Gender</label
+            ><input type="text" name="gender" required placeholder="Gender" />
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone</label
+            ><input type="text" name="phone" required placeholder="Phone" />
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label
+            ><input type="email" name="email" required placeholder="Email" />
+          </div>
+          <div class="form-group">
+            <label for="emergency_contact">Emergency Contact</label
+            ><input
+              type="text"
+              name="emergency_contact"
+              required
+              placeholder="Emergency Contact"
+            />
+          </div>
+          <div class="form-group">
+            <label for="location">Location</label
+            ><input
+              type="text"
+              name="location"
+              required
+              placeholder="Location"
+            />
+          </div>
+          <button type="submit">Add Patient</button>
+        </form>
+        <div class="form-group" style="text-align: center; margin: 20px 0;">
+          <input
+            type="text"
+            id="patientSearch"
+            placeholder="Search by patient name..."
+            style="width: 300px; padding: 8px"
+          />
+        </div>
+        <div style="display: flex; justify-content: center;">
+          <table style="max-width: 1200px; width: 100%">
+          <table style="max-width: 1200px; width: 100%">
+            <thead>
+              <tr>
+                <th onclick="sortTable(0)">Patient ID ▲▼</th>
+                <th onclick="sortTable(1)">Name ▲▼</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th>Emergency Contact</th>
+                <th>Location</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for patient in patients %}
+              <tr>
+                <td>{{ patient['patient_id'] }}</td>
+                <td>{{ patient['name'] }}</td>
+                <td>{{ patient['age'] }}</td>
+                <td>{{ patient['gender'] }}</td>
+                <td>{{ patient['phone'] }}</td>
+                <td>{{ patient['email'] }}</td>
+                <td>{{ patient['emergency_contact'] }}</td>
+                <td>{{ patient['location'] }}</td>
+                <td>
+                  <a
+                    href="{{ url_for('edit_patient', patient_id=patient['patient_id']) }}"
+                    >Edit</a
+                  >
+                  |
+                  <a
+                    href="{{ url_for('delete_patient', patient_id=patient['patient_id']) }}"
+                    onclick="return confirm('Are you sure?')"
+                    >Delete</a
+                  >
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const searchInput = document.getElementById("patientSearch");
+        searchInput.addEventListener("input", () => {
+          const filter = searchInput.value.toLowerCase();
+          const rows = document.querySelectorAll("tbody tr");
+          rows.forEach((row) => {
+            const nameCell = row.querySelector("td:nth-child(2)");
+            const name = nameCell.textContent.toLowerCase();
+            row.style.display = name.includes(filter) ? "" : "none";
+          });
+        });
+      });
+    </script>
+    <script>
+      anime({
+        targets: ".card",
+        translateY: [100, 0],
+        opacity: [0, 1],
+        duration: 1200,
+        easing: "easeOutExpo",
+      });
+      anime({
+        targets: "tbody tr",
+        opacity: [0, 1],
+        delay: anime.stagger(80, { start: 800 }),
+        duration: 600,
+        easing: "easeOutQuad",
+      });
+      function sortTable(columnIndex) {
+  const table = document.querySelector("table tbody");
+  const rows = Array.from(table.querySelectorAll("tr"));
+  const isAscending = table.getAttribute("data-sort-dir") !== "asc";
+  
+  rows.sort((a, b) => {
+    const cellA = a.children[columnIndex].textContent.trim().toLowerCase();
+    const cellB = b.children[columnIndex].textContent.trim().toLowerCase();
+
+    if (!isNaN(cellA) && !isNaN(cellB)) {
+      return isAscending ? cellA - cellB : cellB - cellA;
+    }
+
+    return isAscending
+      ? cellA.localeCompare(cellB)
+      : cellB.localeCompare(cellA);
+  });
+
+  // Replace existing rows
+  table.innerHTML = "";
+  rows.forEach(row => table.appendChild(row));
+  table.setAttribute("data-sort-dir", isAscending ? "asc" : "desc");
+}
+    </script>
+  </body>
+</html>

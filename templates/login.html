@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            min-height: 100vh;
+            background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1500&q=80') no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .glass-card {
+            background: rgba(255,255,255,0.13);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.18);
+            padding: 40px 32px 32px 32px;
+            max-width: 350px;
+            width: 100%;
+            color: #fff;
+            margin: 40px auto;
+        }
+        .glass-card h2 {
+            text-align: center;
+            margin-bottom: 24px;
+            font-size: 2rem;
+            color: #33ccff;
+        }
+        .glass-card form {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+        .glass-card input[type="email"],
+        .glass-card input[type="password"] {
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            background: rgba(255,255,255,0.2);
+            color: #222;
+            font-size: 1rem;
+        }
+        .glass-card input[type="email"]::placeholder,
+        .glass-card input[type="password"]::placeholder {
+            color: #888;
+        }
+        .glass-card .actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.95rem;
+        }
+        .glass-card .remember {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .glass-card button {
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            background: #4CAF50;
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: 10px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .glass-card button:hover {
+            background: #388e3c;
+        }
+        .glass-card .register-link {
+            text-align: center;
+            margin-top: 18px;
+            color: #fff;
+        }
+        .glass-card .register-link a {
+            color: #fff;
+            text-decoration: underline;
+        }
+        .glass-card .error-message {
+            background: #ffebee;
+            color: #e53935;
+            border-radius: 6px;
+            padding: 8px 12px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .glass-card .success-message {
+            background: #e8f5e9;
+            color: #43a047;
+            border-radius: 6px;
+            padding: 8px 12px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="glass-card">
+        <h2>Login</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="{{ category }}-message">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <form method="POST">
+            <input type="email" name="email" placeholder="Email" required>
+            <div style="position:relative;">
+                <input type="password" name="password" id="login-password" placeholder="Password" required style="padding-right:40px;">
+                <span onclick="togglePassword('login-password', this)" style="position:absolute;top:50%;right:12px;transform:translateY(-50%);cursor:pointer;">
+                    <svg id="login-eye" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3.5" stroke="#4CAF50" stroke-width="2"/><path d="M2 12C4.5 7 8.5 4 12 4C15.5 4 19.5 7 22 12C19.5 17 15.5 20 12 20C8.5 20 4.5 17 2 12Z" stroke="#4CAF50" stroke-width="2"/></svg>
+                </span>
+            </div>
+            <div class="actions">
+                <label class="remember"><input type="checkbox" name="remember"> Remember me</label>
+                <a href="#" style="color:#fff;opacity:0.8;">Forgot Password?</a>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+        <div class="register-link">
+            Don't have an account? <a href="{{ url_for('signup') }}">Register</a>
+        </div>
+    </div>
+    <script>
+    function togglePassword(inputId, iconSpan) {
+        const input = document.getElementById(inputId);
+        if (input.type === 'password') {
+            input.type = 'text';
+            iconSpan.querySelector('svg').style.opacity = 0.5;
+        } else {
+            input.type = 'password';
+            iconSpan.querySelector('svg').style.opacity = 1;
+        }
+    }
+    </script>
+</body>
+</html> 

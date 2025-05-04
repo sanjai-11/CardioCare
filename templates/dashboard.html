@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      .stats-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 32px;
+        justify-content: center;
+        margin-top: 32px;
+      }
+      .stat-card {
+        background: rgba(255, 255, 255, 0.85);
+        border-radius: 18px;
+        box-shadow: 0 4px 24px rgba(44, 62, 80, 0.1);
+        padding: 32px 28px;
+        min-width: 200px;
+        max-width: 240px;
+        flex: 1 1 200px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transition: box-shadow 0.2s, transform 0.2s;
+      }
+      .stat-card:hover {
+        box-shadow: 0 8px 32px rgba(44, 62, 80, 0.18);
+        transform: translateY(-4px) scale(1.03);
+      }
+      .stat-icon {
+        font-size: 2.5rem;
+        margin-bottom: 12px;
+      }
+      .stat-label {
+        font-size: 1.1rem;
+        color: #388e3c;
+        margin-bottom: 6px;
+        font-weight: 600;
+      }
+      .stat-value {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: #222;
+      }
+      .chart-container {
+        background: rgba(255, 255, 255, 0.85);
+        border-radius: 18px;
+        box-shadow: 0 4px 24px rgba(44, 62, 80, 0.1);
+        padding: 24px;
+        margin: 32px auto;
+        max-width: 800px;
+      }
+      .chart-title {
+        text-align: center;
+        color: #388e3c;
+        font-size: 1.2rem;
+        margin-bottom: 16px;
+        font-weight: 600;
+      }
+      @media (max-width: 900px) {
+        .stats-grid {
+          flex-direction: column;
+          gap: 18px;
+        }
+        .stat-card {
+          max-width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <ul
+        style="
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        "
+      >
+        <div style="display: flex; gap: 20px">
+          <li>
+            <a
+              href="{{ url_for('dashboard') }}"
+              class="{% if current_page == 'dashboard' %}active{% endif %}"
+              >Dashboard</a
+            >
+          </li>
+          <li>
+            <a
+              href="{{ url_for('manage_patient') }}"
+              class="{% if current_page == 'patient' %}active{% endif %}"
+              >Patients</a
+            >
+          </li>
+          <li>
+            <a
+              href="{{ url_for('manage_heart_record') }}"
+              class="{% if current_page == 'heart_record' %}active{% endif %}"
+              >Heart Records</a
+            >
+          </li>
+          <li>
+            <a
+              href="{{ url_for('manage_risk_analysis') }}"
+              class="{% if current_page == 'risk_analysis' %}active{% endif %}"
+              >Risk Analysis</a
+            >
+          </li>
+          {% if user_type == 'admin' %}
+          <li>
+            <a
+              href="{{ url_for('manage_admin') }}"
+              class="{% if current_page == 'admin' %}active{% endif %}"
+              >Admin</a
+            >
+          </li>
+          {% elif user_type == 'doctor' %}
+          <li>
+            <a
+              href="{{ url_for('doctor_profile') }}"
+              class="{% if current_page == 'profile' %}active{% endif %}"
+              >Profile</a
+            >
+          </li>
+          {% endif %}
+        </div>
+        <li>
+          <a
+            href="{{ url_for('logout') }}"
+            style="
+              background: #e53935;
+              color: #fff;
+              border-radius: 6px;
+              padding: 8px 18px;
+            "
+            >Logout</a
+          >
+        </li>
+      </ul>
+    </nav>
+    <div class="container card">
+      <h2>Welcome, {{ admin_name }}!</h2>
+      <div
+        style="
+          text-align: center;
+          font-size: 1.2rem;
+          color: #388e3c;
+          margin-bottom: 18px;
+        "
+      >
+        Here's a quick overview of your heart health records system.
+      </div>
+      <div class="stats-grid">
+        <a href="{{ url_for('manage_patient') }}" style="text-decoration: none">
+          <div class="stat-card">
+            <div class="stat-icon">👤</div>
+            <div class="stat-label">Total Patients</div>
+            <div class="stat-value">{{ patient_count }}</div>
+          </div>
+        </a>
+
+        <a
+          href="{{ url_for('manage_heart_record') }}"
+          style="text-decoration: none"
+        >
+          <div class="stat-card">
+            <div class="stat-icon">❤️</div>
+            <div class="stat-label">Heart Records</div>
+            <div class="stat-value">{{ heart_record_count }}</div>
+          </div>
+        </a>
+
+        <a
+          href="{{ url_for('manage_risk_analysis') }}"
+          style="text-decoration: none"
+        >
+          <div class="stat-card">
+            <div class="stat-icon">📊</div>
+            <div class="stat-label">Risk Analyses</div>
+            <div class="stat-value">{{ risk_analysis_count }}</div>
+          </div>
+        </a>
+
+        <div class="stat-card">
+          <div class="stat-icon">⚠️</div>
+          <div class="stat-label">High Risk Patients</div>
+          <div class="stat-value">{{ high_risk_count }}</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">🩸</div>
+          <div class="stat-label">High BP Patients</div>
+          <div class="stat-value">{{ high_bp_count }}</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">💉</div>
+          <div class="stat-label">Low BP Patients</div>
+          <div class="stat-value">{{ low_bp_count }}</div>
+        </div>
+      </div>
+
+      <div class="chart-container">
+        <div class="chart-title">Gender Distribution</div>
+        <canvas id="genderChart" width="350" height="350"
+                data-male="{{ male_count }}"
+                data-female="{{ female_count }}"></canvas>
+        <div id="genderChartMsg" style="text-align:center;color:#e53935;font-weight:bold;display:none;">No gender data available.</div>
+      </div>
+      <div class="chart-container">
+        <div class="chart-title">Blood Pressure Distribution</div>
+        <canvas id="bpChart" width="350" height="350"
+                data-high="{{ high_bp_count }}"
+                data-low="{{ low_bp_count }}"
+                data-total="{{ patient_count }}"></canvas>
+      </div>
+      <div class="chart-container">
+        <div class="chart-title">Heart Disease Risk</div>
+        <canvas id="riskChart" width="350" height="350"
+                data-high="{{ high_risk_count }}"
+                data-total="{{ patient_count }}"></canvas>
+      </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script>
+      anime({
+        targets: ".card",
+        translateY: [100, 0],
+        opacity: [0, 1],
+        duration: 1200,
+        easing: "easeOutExpo",
+      });
+
+      // Gender Distribution Chart
+      const genderChart = document.getElementById('genderChart');
+      const maleCount = parseInt(genderChart.dataset.male);
+      const femaleCount = parseInt(genderChart.dataset.female);
+      if (maleCount === 0 && femaleCount === 0) {
+        document.getElementById('genderChart').style.display = 'none';
+        document.getElementById('genderChartMsg').style.display = 'block';
+      } else {
+        new Chart(genderChart.getContext('2d'), {
+          type: 'doughnut',
+          data: {
+            labels: ['Male', 'Female'],
+            datasets: [{
+              data: [maleCount, femaleCount],
+              backgroundColor: ['#4CAF50', '#FFC107'],
+              borderWidth: 1
+            }]
+          },
+          options: {
+            responsive: false,
+            plugins: {
+              legend: {
+                position: 'bottom'
+              }
+            }
+          }
+        });
+      }
+
+      // Blood Pressure Chart
+      const bpChart = document.getElementById('bpChart');
+      const highBP = parseInt(bpChart.dataset.high);
+      const lowBP = parseInt(bpChart.dataset.low);
+      const totalBP = parseInt(bpChart.dataset.total);
+      const normalBP = Math.max(totalBP - highBP - lowBP, 0);
+      new Chart(bpChart.getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: ['High BP', 'Normal BP', 'Low BP'],
+          datasets: [{
+            label: 'Patients',
+            data: [highBP, normalBP, lowBP],
+            backgroundColor: ['#e53935', '#4CAF50', '#2196F3']
+          }]
+        },
+        options: {
+          responsive: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: { beginAtZero: true }
+          }
+        }
+      });
+
+      // Heart Disease Risk Chart
+      const riskChart = document.getElementById('riskChart');
+      const highRisk = parseInt(riskChart.dataset.high);
+      const totalRisk = parseInt(riskChart.dataset.total);
+      const otherRisk = Math.max(totalRisk - highRisk, 0);
+      new Chart(riskChart.getContext('2d'), {
+        type: 'pie',
+        data: {
+          labels: ['High Risk', 'Other'],
+          datasets: [{
+            data: [highRisk, otherRisk],
+            backgroundColor: ['#e53935', '#4CAF50']
+          }]
+        },
+        options: {
+          responsive: false,
+          plugins: {
+            legend: { position: 'bottom' }
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
