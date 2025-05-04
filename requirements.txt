@@ -6,3 +6,4 @@ Flask-WTF==1.0.1
 Flask-MySQLdb==1.0.1
 Werkzeug>=3.1.0
 numpy==1.26.1
+scikit-learn==1.1.2
