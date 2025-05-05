@@ -16,6 +16,7 @@ This file includes sample rows for:
 
 ## 2. Database Structure
 link to our database creation file - https://colab.research.google.com/drive/17hfFNWwJBGtwsaFk8xvG6-Wi_x1lcZX_?usp=sharing
+
 We used **SQLite** as our database.
 
 The schema includes the following tables:
